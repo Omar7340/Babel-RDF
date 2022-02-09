@@ -1,6 +1,5 @@
-Babel_RDF/Babel_RDF/__pycache__/__init__.cpython-38.pyc
-Babel_RDF/Babel_RDF/__pycache__/settings.cpython-38.pyc
-Babel_RDF/Babel_RDF/__pycache__/urls.cpython-38.pyc
-Babel_RDF/Babel_RDF/__pycache__/wsgi.cpython-38.pyc
+__pycache__/
 Babel_RDF/db.sqlite3
 Babel_RDF/.env
+.env
+.vscode

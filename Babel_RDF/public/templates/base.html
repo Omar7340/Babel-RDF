@@ -1,0 +1,96 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr" class="no-js">
+
+<head>
+    <!-- Basic need -->
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <link rel="profile" href="#">
+
+    <!-- Google Font -->
+    <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
+    <!-- Mobile specific meta -->
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone-no">
+
+    <!-- CSS files -->
+    <link rel="stylesheet" href="{% static 'css/plugins.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+    <!-- BEGIN PRELOADING -->
+    <div id="preloader">
+        <img class="logo" src="{% static 'images/logo1.png' %}" alt="" width="119" height="58">
+        <div id="status">
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <!-- END PRELOADING -->
+
+    <!-- BEGIN Header -->
+    <header class="ht-header full-width-hd">
+        <div class="row">
+            <nav id="mainNav" class="navbar navbar-default navbar-custom">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header logo">
+                    <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Basculer la navigation</span>
+                        <div id="nav-icon1">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <a href="{% url 'index' %}"><img class="logo" src="{% static 'images/logo1.png' %}" alt="" width="119" height="58"></a>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav flex-child-menu menu-left">
+                        <li class="hidden">
+                            <a href="#page-top"></a>
+                        </li>
+                        <li><a href="{% url 'index' %}">Accueil</a></li>
+                        <li><a href="{% url 'manga_list' %}">Mangas</a></li>
+                        <li><a href="{% url 'auteurs_list' %}">Auteurs</a></li>
+                    </ul>
+                </div>
+                <!-- /.navbar-collapse -->
+            </nav>
+            <!-- search form -->
+        </div>
+    </header>
+    <!-- END Header -->
+
+    {% block content %}{% endblock %}
+
+    <!-- BEGIN FOOTER -->
+    <footer class="ht-footer full-width-ft">
+        <div class="row">
+            <div class="ft-copyright">
+                <div class="ft-left">
+                    <p>© 2022 Babel. Tous droits réservés.</p>
+                </div>
+                <div class="backtotop">
+                    <p><a href="#" id="back-to-top">Revenir en haut de la page <i class="ion-ios-arrow-thin-up"></i></a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- END FOOTER -->
+
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/plugins2.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+</body>
+
+</html>
