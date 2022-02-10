@@ -4,13 +4,23 @@ import requests
 class Sparql:
     def __init__(self, endpoint):
         self.endpoint = endpoint
-        self.default_graph_uri = "http://dbpedia.org"
+        # self.prefix = {
+        #     "rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        #     "dbp":"http://dbpedia.org/property/",
+        #     "dbo":"http://dbpedia.org/ontology/",
+        #     "xsd":"http://www.w3.org/2001/XMLSchema#"
+        #     }
+
         self.prefix = {
-            "rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-            "dbp":"http://dbpedia.org/property/",
-            "dbo":"http://dbpedia.org/ontology/",
-            "xsd":"http://www.w3.org/2001/XMLSchema#"
-            }
+            "wd" : "http://www.wikidata.org/entity/",
+            "wdt" : "http://www.wikidata.org/prop/direct/",
+            "wikibase" : "http://wikiba.se/ontology#",
+            "p" : "http://www.wikidata.org/prop/",
+            "ps" : "http://www.wikidata.org/prop/statement/",
+            "pq" : "http://www.wikidata.org/prop/qualifier/",
+            "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
+            "bd" : "http://www.bigdata.com/rdf#"
+        }
 
     def get_prefixes(self):
         result = ""
@@ -23,11 +33,21 @@ class Sparql:
         try:
             query = self.get_prefixes() + q
             params = {'query': query}
-            resp = requests.get(self.endpoint, params=params, headers={'Accept': 'application/json'})
+            resp = requests.get(self.endpoint, params=params, headers={'Accept': 'application/sparql-results+json'})
             return resp.text
         except Exception as e:
             print(e, file=sys.stdout)
             raise
+    
+    def get_all_mangas(self):
+        q = """
+            SELECT ?manga ?mangaLabel WHERE {
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+                ?manga wdt:P31 wd:Q8274.
+            }
+        """
+
+        return self.query(q)
 
 # Exemple
 # q1 = """
@@ -37,5 +57,5 @@ class Sparql:
 #                 ?team foaf:name ?u
 #     } LIMIT 10
 # """
-# sparql = Sparql("http://dbpedia.org/sparql")
-# print(sparql.query(q1))
+# spqr = Sparql("https://query.wikidata.org/sparql")
+# print(sparql.get_all_mangas())
