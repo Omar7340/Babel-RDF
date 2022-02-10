@@ -2,7 +2,7 @@
 import requests
 
 class Sparql:
-    def __init__(self, endpoint):
+    def __init__(self, endpoint = "https://query.wikidata.org/sparql"):
         self.endpoint = endpoint
         # self.prefix = {
         #     "rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
@@ -57,5 +57,5 @@ class Sparql:
 #                 ?team foaf:name ?u
 #     } LIMIT 10
 # """
-# spqr = Sparql("https://query.wikidata.org/sparql")
+# spqr = Sparql()
 # print(sparql.get_all_mangas())
