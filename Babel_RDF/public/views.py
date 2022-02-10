@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from public.sparql.sparql import Sparql
 
 
 SITE_NAME = "Babel"
+spqr = Sparql()
 
 # Page Home
 def index(request):
@@ -33,7 +35,8 @@ def manga_details(request, name):
 def auteurs_list(request):
     template = loader.get_template('pages/list_auteurs.html')
     context = {
-        'title': SITE_NAME
+        'title': SITE_NAME,
+        'auteurs': spqr.get_all_authors()
     }
     return HttpResponse(template.render(context, request))
 

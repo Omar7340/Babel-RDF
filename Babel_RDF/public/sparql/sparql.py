@@ -43,7 +43,35 @@ class Sparql:
         sparql = SPARQLWrapper(self.endpoint, agent=user_agent)
         sparql.setQuery(query)
         sparql.setReturnFormat(JSON)
-        return sparql.query().convert()
+        result = sparql.query().convert()
+
+        result = result["results"]["bindings"]
+
+        return result
+    
+    # Gets all mangaka authors
+    def get_all_authors(self):
+
+        q = """
+            SELECT ?author ?authorLabel ?image WHERE {
+                ?manga wdt:P31 wd:Q8274 .
+                ?manga wdt:P50 ?author .
+                ?author wdt:P18 ?image .
+                SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+            }
+        """
+
+        results = self.get_results(q)
+        authors = []
+
+        for item in results:
+            authors.append({
+                "id": item["author"]["value"].split("/")[-1],
+                "label": item["authorLabel"]["value"],
+                "image": item["image"]["value"]
+            })
+
+        return authors
     
     def get_all_mangas(self):
         q = """
@@ -64,4 +92,4 @@ class Sparql:
 #     } LIMIT 10
 # """
 # spqr = Sparql()
-# print(spqr.get_all_mangas())
+# print(spqr.get_all_authors())
