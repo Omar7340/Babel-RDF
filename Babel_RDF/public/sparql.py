@@ -1,5 +1,4 @@
 # make a request on sparql endpoint on dbpedia
-from django.utils.http import urlencode
 import requests
 
 class Sparql:
