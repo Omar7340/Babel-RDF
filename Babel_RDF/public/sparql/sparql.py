@@ -1,5 +1,8 @@
 # make a request on sparql endpoint on dbpedia
+from distutils.command.build import build
 import requests
+import sys
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 class Sparql:
     def __init__(self, endpoint = "https://query.wikidata.org/sparql"):
@@ -29,15 +32,18 @@ class Sparql:
         
         return result
 
-    def query(self, q):
-        try:
-            query = self.get_prefixes() + q
-            params = {'query': query}
-            resp = requests.get(self.endpoint, params=params, headers={'Accept': 'application/sparql-results+json'})
-            return resp.text
-        except Exception as e:
-            print(e, file=sys.stdout)
-            raise
+    def build_query(self, q):
+        return self.get_prefixes() + q
+
+    def get_results(self, query):
+        query = self.build_query(query)
+
+        user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
+        # TODO adjust user agent; see https://w.wiki/CX6
+        sparql = SPARQLWrapper(self.endpoint, agent=user_agent)
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        return sparql.query().convert()
     
     def get_all_mangas(self):
         q = """
@@ -47,7 +53,7 @@ class Sparql:
             }
         """
 
-        return self.query(q)
+        return self.get_results(q)
 
 # Exemple
 # q1 = """
@@ -58,4 +64,4 @@ class Sparql:
 #     } LIMIT 10
 # """
 # spqr = Sparql()
-# print(sparql.get_all_mangas())
+# print(spqr.get_all_mangas())
