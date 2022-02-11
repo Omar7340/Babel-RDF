@@ -5,25 +5,26 @@ import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 class Sparql:
-    def __init__(self, endpoint = "https://query.wikidata.org/sparql"):
+    def __init__(self, endpoint = "https://dbpedia.org/sparql"):
         self.endpoint = endpoint
-        # self.prefix = {
-        #     "rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        #     "dbp":"http://dbpedia.org/property/",
-        #     "dbo":"http://dbpedia.org/ontology/",
-        #     "xsd":"http://www.w3.org/2001/XMLSchema#"
-        #     }
-
         self.prefix = {
-            "wd" : "http://www.wikidata.org/entity/",
-            "wdt" : "http://www.wikidata.org/prop/direct/",
-            "wikibase" : "http://wikiba.se/ontology#",
-            "p" : "http://www.wikidata.org/prop/",
-            "ps" : "http://www.wikidata.org/prop/statement/",
-            "pq" : "http://www.wikidata.org/prop/qualifier/",
-            "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
-            "bd" : "http://www.bigdata.com/rdf#"
+            "rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+            "dbp":"http://dbpedia.org/property/",
+            "dbo":"http://dbpedia.org/ontology/",
+            "dbr":"http://dbpedia.org/resource/",
+            "xsd":"http://www.w3.org/2001/XMLSchema#"
         }
+
+        # self.prefix = {
+        #     "wd" : "http://www.wikidata.org/entity/",
+        #     "wdt" : "http://www.wikidata.org/prop/direct/",
+        #     "wikibase" : "http://wikiba.se/ontology#",
+        #     "p" : "http://www.wikidata.org/prop/",
+        #     "ps" : "http://www.wikidata.org/prop/statement/",
+        #     "pq" : "http://www.wikidata.org/prop/qualifier/",
+        #     "rdfs" : "http://www.w3.org/2000/01/rdf-schema#",
+        #     "bd" : "http://www.bigdata.com/rdf#"
+        # }
 
     def get_prefixes(self):
         result = ""
@@ -53,7 +54,7 @@ class Sparql:
     def get_all_authors(self):
 
         q = """
-            SELECT ?author ?authorLabel ?image WHERE {
+            SELECT DISTINCT ?author ?authorLabel ?image WHERE {
                 ?manga wdt:P31 wd:Q8274 .
                 ?manga wdt:P50 ?author .
                 ?author wdt:P18 ?image .
@@ -85,11 +86,13 @@ class Sparql:
 
 # Exemple
 # q1 = """
-#     select DISTINCT  ?u where {
-#               ?s rdf:type dbo:BasketballPlayer .
-#                 ?s dbo:team ?team .
-#                 ?team foaf:name ?u
-#     } LIMIT 10
+#     SELECT distinct 
+#         ?url,
+#         ?image
+#     WHERE {
+#         ?url dbo:type dbr:Manga .
+#         ?x dbo:thumbnail ?image .
+#     } 
 # """
 # spqr = Sparql()
-# print(spqr.get_all_authors())
+# print(spqr.get_results(q1))
