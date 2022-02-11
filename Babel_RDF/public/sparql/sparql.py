@@ -100,15 +100,48 @@ class Sparql:
 
         return authors
     
-    def get_all_mangas(self):
+
+    ###################
+    ####   MANGAS  ####
+    ###################
+    
+    def get_all_mangas_count(self):
         q = """
-            SELECT ?manga ?mangaLabel WHERE {
-                SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-                ?manga wdt:P31 wd:Q8274.
+            SELECT DISTINCT count(*) AS ?nb_mangas
+            WHERE {
+                ?x rdf:type dbo:Manga.
+                ?x dbo:thumbnail ?image.
+                ?x dbp:name ?mangaLabel.
             }
         """
 
-        return self.get_results(q)
+        return self.get_results(q)[0]["nb_mangas"]["value"]
+
+    def get_all_mangas(self, page, offset):
+        limit = str(offset)
+        offset = "0" if int(page) == 1 else str((int(page)-1)*int(limit))
+        q = """
+            SELECT DISTINCT *
+            WHERE {
+                ?x rdf:type dbo:Manga.
+                ?x dbo:thumbnail ?image.
+                ?x dbp:name ?mangaLabel.
+            }
+            OFFSET """+ offset +""" 
+            LIMIT """+ limit +"""
+        """
+
+        results = self.get_results(q)
+        mangas = []
+
+        for item in results:
+            mangas.append({
+                "id": item["x"]["value"].split("/")[-1],
+                "label": item["mangaLabel"]["value"],
+                "image": item["image"]["value"].replace('http://commons.wikimedia.org/wiki/Special:FilePath/', 'https://en.wikipedia.org/wiki/Special:FilePath/')
+            })
+
+        return mangas
 
 # Exemple
 # q1 = """
