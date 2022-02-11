@@ -23,89 +23,44 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="topbar-filter fw">
-                    <p><span>1,608 movies</span> trouvés</p>
-                    <label>Trier par:</label>
-                    <select>
-                        <option value="popularity">Popularity Descending</option>
-                        <option value="popularity">Popularity Ascending</option>
-                        <option value="rating">Rating Descending</option>
-                        <option value="rating">Rating Ascending</option>
-                        <option value="date">Release date Descending</option>
-                        <option value="date">Release date Ascending</option>
-                    </select>
-                    <a href="movielist.html" class="list"><i class="ion-ios-list-outline "></i></a>
-                    <a href="moviegridfw.html" class="grid"><i class="ion-grid active"></i></a>
+                <div class="topbar-filter fw " style="height:34px;">
+                    <p><span>{{ nb_mangas }} mangas</span> trouvés</p>
                 </div>
                 <div class="flex-wrap-movielist mv-grid-fw">
-                    <div class="movie-item-style-2 movie-item-style-1">
-                        <img src="{% static 'images/uploads/mv1.jpg' %}" alt="">
-                        <div class="hvr-inner">
-                            <a href="{% url 'manga_details' 'name' %}"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-                        </div>
-                        <div class="mv-item-infor">
-                            <h6><a href="{% url 'manga_details' 'name' %}">oblivion</a></h6>
-                            <p class="rate"><i class="ion-android-star"></i><span>8.1</span> /10</p>
-                        </div>
-                    </div>
-                    <div class="movie-item-style-2 movie-item-style-1">
-                        <img src="{% static 'images/uploads/mv2.jpg' %}" alt="">
-                        <div class="hvr-inner">
-                            <a href="{% url 'manga_details' 'name' %}"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-                        </div>
-                        <div class="mv-item-infor">
-                            <h6><a href="{% url 'manga_details' 'name' %}">into the wild</a></h6>
-                            <p class="rate"><i class="ion-android-star"></i><span>7.8</span> /10</p>
-                        </div>
-                    </div>
-                    <div class="movie-item-style-2 movie-item-style-1">
-                        <img src="{% static 'images/uploads/mv-item3.jpg' %}" alt="">
-                        <div class="hvr-inner">
-                            <a href="{% url 'manga_details' 'name' %}"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-                        </div>
-                        <div class="mv-item-infor">
-                            <h6><a href="{% url 'manga_details' 'name' %}">Die hard</a></h6>
-                            <p class="rate"><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                        </div>
-                    </div>
-                    <div class="movie-item-style-2 movie-item-style-1">
-                        <img src="{% static 'images/uploads/mv-item4.jpg' %}" alt="">
-                        <div class="hvr-inner">
-                            <a href="{% url 'manga_details' 'name' %}"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-                        </div>
-                        <div class="mv-item-infor">
-                            <h6><a href="{% url 'manga_details' 'name' %}">The walk</a></h6>
-                            <p class="rate"><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                        </div>
-                    </div>
-                    <div class="movie-item-style-2 movie-item-style-1">
-                        <img src="{% static 'images/uploads/mv3.jpg' %}" alt="">
-                        <div class="hvr-inner">
-                            <a href="{% url 'manga_details' 'name' %}"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-                        </div>
-                        <div class="mv-item-infor">
-                            <h6><a href="{% url 'manga_details' 'name' %}">blade runner </a></h6>
-                            <p class="rate"><i class="ion-android-star"></i><span>7.3</span> /10</p>
-                        </div>
-                    </div>
 
+                    {% for item in mangas %}
+                    <div class="movie-item-style-2 movie-item-style-1">
+                        {% if item.image == 'undefined' %}
+                        <img src="{% static 'images/no-image.png' %}" alt="">
+                        {% else %}
+                        <img height="401" src="{{ item.image }}" alt="">
+                        {% endif %}
+                        <div class="hvr-inner">
+                            <a href="{% url 'manga_details' item.id %}"> Voir plus <i class="ion-android-arrow-dropright"></i> </a>
+                        </div>
+                        <div class="mv-item-infor">
+                            <h6><a href="{% url 'manga_details' item.id %}">{{ item.label }}</a></h6>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
                 </div>
-                <div class="topbar-filter">
-                    <label>Mangas par page:</label>
-                    <select>
-                        <option value="range">20 Mangas</option>
-                        <option value="saab">10 Mangas</option>
-                    </select>
-
+                <div class="topbar-filter" style="height:34px;">
+                    <label></label>
                     <div class="pagination2">
-                        <span>Page 1 / 2:</span>
-                        <a class="active" href="#">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">...</a>
-                        <a href="#">78</a>
-                        <a href="#">79</a>
-                        <a href="#"><i class="ion-arrow-right-b"></i></a>
+                        {% if pagination.current_page == pagination.prev_page %}
+                        <a href="{% url 'manga_list' pagination.prev_page %}" hidden><i class="ion-arrow-left-b"></i></a>
+                        {% else %}
+                        <a href="{% url 'manga_list' pagination.prev_page %}"><i class="ion-arrow-left-b"></i></a>
+                        {% endif %}
+                        
+                        <span>Page {{ pagination.current_page }} / {{ pagination.last_page }}</span>
+
+                        {% if pagination.current_page == pagination.next_page %}
+                        <a href="{% url 'manga_list' pagination.next_page %}" hidden><i class="ion-arrow-right-b"></i></a>
+                        {% else %}
+                        <a href="{% url 'manga_list' pagination.next_page %}"><i class="ion-arrow-right-b"></i></a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
