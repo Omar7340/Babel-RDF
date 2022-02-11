@@ -36,10 +36,10 @@
                         <img height="401" src="{{ item.image }}" alt="">
                         {% endif %}
                         <div class="hvr-inner">
-                            <a href="{% url 'manga_details' item.id %}"> Voir plus <i class="ion-android-arrow-dropright"></i> </a>
+                            <a href="{% url 'manga_details' item.label %}"> Voir plus <i class="ion-android-arrow-dropright"></i> </a>
                         </div>
                         <div class="mv-item-infor">
-                            <h6><a href="{% url 'manga_details' item.id %}">{{ item.label }}</a></h6>
+                            <h6><a href="{% url 'manga_details' item.label %}">{{ item.label }}</a></h6>
                         </div>
                     </div>
                     {% endfor %}

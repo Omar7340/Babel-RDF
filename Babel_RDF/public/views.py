@@ -31,7 +31,6 @@ def manga_list(request, page):
             'last_page' : str(ceil(nb_mangas/offset)),
             'prev_page' : str(page-1) if page>1 else str(page),
             'next_page' : str(page+1) if page<ceil(nb_mangas/offset) else str(page),
-            
         }
     }
 
@@ -41,7 +40,8 @@ def manga_list(request, page):
 def manga_details(request, name):
     template = loader.get_template('pages/details_manga.html')
     context = {
-        'title': SITE_NAME
+        'title': SITE_NAME,
+        'manga': spqr.get_manga_details(name),
     }
     return HttpResponse(template.render(context, request))
 
