@@ -8285,3 +8285,28 @@ footer.full-width-ft .ft-copyright {
   font-family: 'Dosis', sans-serif;
   font-weight: 700;
 }
+
+.container-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 20px; 
+}
+
+.ceb-item-style-2 {
+  display: flex;
+  flex-direction: column;
+}
+
+.ceb-item-style-2 .img-author-container {
+  flex: 1;
+}
+
+.ceb-item-style-2 .ceb-infor {
+  flex: 2;
+}
+
+.ceb-item-style-2 img {
+  height: 100%;
+}

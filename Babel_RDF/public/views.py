@@ -55,8 +55,9 @@ def auteurs_list(request):
     return HttpResponse(template.render(context, request))
 
 # Page Auteur Details
-def auteur_details(request, name):
+def auteur_details(request, label):
     template = loader.get_template('pages/details_auteur.html')
+    spqr.get
     context = {
         'title': SITE_NAME
     }
