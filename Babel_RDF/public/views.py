@@ -12,7 +12,10 @@ spqr = Sparql()
 def index(request):
     template = loader.get_template('index.html')
     context = {
-        'title': SITE_NAME
+        'title': SITE_NAME,
+        'slider': spqr.get_slider_manga(),
+        'last_updated': spqr.get_last_eight_mangas_publicated(),
+        'most_volume': spqr.get_mangas_with_most_volume()
     }
     return HttpResponse(template.render(context, request))
 

@@ -49,6 +49,112 @@ class Sparql:
         result = result["results"]["bindings"]
 
         return result
+
+
+
+    #################
+    ####   HOME  ####
+    #################
+
+    # Get mangas for slider
+    def get_slider_manga(self):
+        q = """
+            SELECT DISTINCT *
+            WHERE {
+                ?x rdf:type dbo:Manga.
+                ?x dbp:name ?mangaLabel.
+                ?x dbo:thumbnail ?image.
+                ?x dbo:firstPublicationDate ?firstPublicationDate.
+                ?x dbo:lastPublicationDate ?lastPublicationDate.
+                ?x dbp:genre ?genre.
+                ?x dbp:demographic ?demographic.
+            }
+            LIMIT 4
+        """
+
+        results = self.get_results(q)
+
+        mangas = []
+
+        for item in results:
+            mangas.append({
+                "id": item["x"]["value"].split("/")[-1],
+                "label": item["mangaLabel"]["value"] if "mangaLabel" in item  else 'undefined',
+                "image": item["image"]["value"].replace('http://commons.wikimedia.org/wiki/Special:FilePath/', 'https://en.wikipedia.org/wiki/Special:FilePath/') if "image" in results[0]  else 'undefined',
+                "year": item["firstPublicationDate"]["value"].split('-')[0] if "firstPublicationDate" in item  else 'undefined',
+                "firstPublicationDate": item["firstPublicationDate"]["value"] if "firstPublicationDate" in item  else 'undefined',
+                "lastPublicationDate": item["lastPublicationDate"]["value"] if "lastPublicationDate" in item  else 'undefined',
+                "genre": [
+                    item["demographic"]["value"] if "demographic" in item  else 'undefined',
+                    item["genre"]["value"].split('/')[-1] if "genre" in item  else 'undefined'
+                ]
+            })
+
+        return mangas
+
+    # Get the last eight mangas publicated
+    def get_last_eight_mangas_publicated(self):
+        q = """
+            SELECT DISTINCT *
+            WHERE {
+                ?x rdf:type dbo:Manga.
+                ?x dbp:name ?mangaLabel.
+                ?x dbo:lastPublicationDate ?lastPublicationDate
+                OPTIONAL {
+                    ?x dbo:thumbnail ?image.
+                }
+                
+            }
+            ORDER BY DESC(?lastPublicationDate)
+            LIMIT 8
+        """
+
+        results = self.get_results(q)
+        mangas = []
+
+        for item in results:
+            mangas.append({
+                "id": item["x"]["value"].split("/")[-1],
+                "label": item["mangaLabel"]["value"],
+                "image": item["image"]["value"].replace('http://commons.wikimedia.org/wiki/Special:FilePath/', 'https://en.wikipedia.org/wiki/Special:FilePath/') if "image" in item  else 'undefined',
+                "date": item["lastPublicationDate"]["value"] if "lastPublicationDate" in item  else 'undefined'
+            })
+
+        return mangas
+
+    # Get the manga with the most volume
+    def get_mangas_with_most_volume(self):
+        q = """
+            SELECT DISTINCT *
+            WHERE {
+                ?x rdf:type dbo:Manga.
+                ?x dbp:name ?mangaLabel.
+                ?x dbo:numberOfVolumes ?volumes.
+                OPTIONAL {
+                    ?x dbo:thumbnail ?image.
+                }
+                
+            }
+            ORDER BY DESC(?volumes)
+            LIMIT 8
+        """
+
+        results = self.get_results(q)
+        mangas = []
+
+        for item in results:
+            mangas.append({
+                "id": item["x"]["value"].split("/")[-1],
+                "label": item["mangaLabel"]["value"],
+                "image": item["image"]["value"].replace('http://commons.wikimedia.org/wiki/Special:FilePath/', 'https://en.wikipedia.org/wiki/Special:FilePath/') if "image" in item  else 'undefined',
+                "volumes": item["volumes"]["value"] if "volumes" in item  else 'undefined'
+            })
+
+        return mangas
+
+    ####################
+    ####   AUTHORS  ####
+    ####################
     
     # Gets all mangaka authors
     def get_all_authors(self):
@@ -105,7 +211,7 @@ class Sparql:
     ####   MANGAS  ####
     ###################
     
-    # récupére le nombre de mangas
+    # Get the numbers of mangas
     def get_all_mangas_count(self):
         q = """
             SELECT DISTINCT count(*) AS ?nb_mangas
@@ -120,7 +226,7 @@ class Sparql:
 
         return self.get_results(q)[0]["nb_mangas"]["value"]
 
-    # récupére tous les mangas (nom, image)
+    # Gets all mangas (name, image)
     def get_all_mangas(self, page, offset):
         limit = str(offset)
         offset = "0" if int(page) == 1 else str((int(page)-1)*int(limit))
@@ -149,6 +255,7 @@ class Sparql:
 
         return mangas
 
+    # Get details of manga
     def get_manga_details(self, name):
         q = """
             SELECT DISTINCT *
@@ -171,8 +278,6 @@ class Sparql:
         """
 
         results = self.get_results(q)
-
-        # print(results)
 
         manga = {
             "id": name,
