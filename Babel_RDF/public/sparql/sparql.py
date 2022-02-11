@@ -54,11 +54,37 @@ class Sparql:
     def get_all_authors(self):
 
         q = """
-            SELECT DISTINCT ?author ?authorLabel ?image WHERE {
-                ?manga wdt:P31 wd:Q8274 .
-                ?manga wdt:P50 ?author .
-                ?author wdt:P18 ?image .
-                SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+            SELECT distinct ?name ?img
+            WHERE {
+                ?manga dbo:type dbr:Manga .
+                ?manga dbo:author ?author .
+                ?author dbo:thumbnail ?img .
+                ?author dbp:name ?name
+            } 
+        """
+
+        results = self.get_results(q)
+        authors = []
+
+        for item in results:
+            if item["name"]["value"] != '' and item["img"]["value"]:
+                authors.append({
+                    "label": item["name"]["value"].replace("/", "%2F"),
+                    "image": item["img"]["value"]
+                })
+
+        return authors
+    
+    # Gets all mangaka authors
+    def get_author_detail(self, label):
+
+        q = """
+            SELECT distinct ?name ?img
+            WHERE {
+                ?manga dbo:type dbr:Manga .
+                ?manga dbo:author ?author .
+                ?author dbo:thumbnail ?img .
+                ?author dbp:name ?name
             }
         """
 
@@ -66,11 +92,11 @@ class Sparql:
         authors = []
 
         for item in results:
-            authors.append({
-                "id": item["author"]["value"].split("/")[-1],
-                "label": item["authorLabel"]["value"],
-                "image": item["image"]["value"]
-            })
+            if item["name"]["value"] != '' and item["img"]["value"]:
+                authors.append({
+                    "label": item["name"]["value"].replace("/", "%2F"),
+                    "image": item["img"]["value"]
+                })
 
         return authors
     
@@ -86,12 +112,12 @@ class Sparql:
 
 # Exemple
 # q1 = """
-#     SELECT distinct 
-#         ?url,
-#         ?image
+#     SELECT distinct ?name ?img
 #     WHERE {
-#         ?url dbo:type dbr:Manga .
-#         ?x dbo:thumbnail ?image .
+#         ?manga dbo:type dbr:Manga .
+#         ?manga dbo:author ?author .
+#         ?author dbo:thumbnail ?img .
+#         ?author dbp:name ?name
 #     } 
 # """
 # spqr = Sparql()
