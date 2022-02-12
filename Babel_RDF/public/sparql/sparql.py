@@ -102,7 +102,6 @@ class Sparql:
                 ?x dbp:name ?mangaLabel.
                 ?x dbo:lastPublicationDate ?lastPublicationDate
                 OPTIONAL { ?x dbo:thumbnail ?image. }
-                
             }
             ORDER BY DESC(?lastPublicationDate)
             LIMIT 8
@@ -129,10 +128,7 @@ class Sparql:
                 ?x rdf:type dbo:Manga.
                 ?x dbp:name ?mangaLabel.
                 ?x dbo:numberOfVolumes ?volumes.
-                OPTIONAL {
-                    ?x dbo:thumbnail ?image.
-                }
-                
+                OPTIONAL { ?x dbo:thumbnail ?image. }
             }
             ORDER BY DESC(?volumes)
             LIMIT 8
