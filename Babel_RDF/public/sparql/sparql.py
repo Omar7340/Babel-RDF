@@ -3,6 +3,7 @@ from distutils.command.build import build
 import requests
 import sys
 from SPARQLWrapper import SPARQLWrapper, JSON
+import datetime
 
 class Sparql:
     def __init__(self, endpoint = "https://dbpedia.org/sparql"):
@@ -49,6 +50,10 @@ class Sparql:
         result = result["results"]["bindings"]
 
         return result
+
+    ###################
+    ####  AUTEURS  ####
+    ###################
     
     # Gets all mangaka authors
     def get_all_authors(self):
@@ -59,7 +64,7 @@ class Sparql:
                 ?manga dbo:type dbr:Manga .
                 ?manga dbo:author ?author .
                 ?author dbo:thumbnail ?img .
-                ?author dbp:name ?name
+                ?author foaf:name ?name
             } 
         """
 
@@ -76,29 +81,52 @@ class Sparql:
         return authors
     
     # Gets all mangaka authors
-    def get_author_detail(self, label):
+    def get_author_detail(self, name):
+
+        name = name.replace("_", " ").replace("%2F", "/")
 
         q = """
-            SELECT distinct ?name ?img
+            SELECT distinct ?name ?img ?nationality ?comment ?website ?birthdate ?birthplace
             WHERE {
                 ?manga dbo:type dbr:Manga .
                 ?manga dbo:author ?author .
-                ?author dbo:thumbnail ?img .
-                ?author dbp:name ?name
+                OPTIONAL {
+                    ?author dbo:thumbnail ?img .
+                    ?author foaf:name ?name .
+                    ?author dbp:nationality ?nationality .
+                    ?author rdfs:comment ?comment .
+                    ?author dbp:website ?website .
+                    ?author dbp:birthDate ?birthdate .
+                    ?author dbp:birthPlace ?birthplace .
+                    FILTER regex(?name, """ + "\"" + name + "\"" + """) .
+                    FILTER langMatches(lang(?comment), 'fr')
+                }
             }
         """
 
         results = self.get_results(q)
-        authors = []
+        author = {}
+
+        print(results)
 
         for item in results:
-            if item["name"]["value"] != '' and item["img"]["value"]:
-                authors.append({
-                    "label": item["name"]["value"].replace("/", "%2F"),
-                    "image": item["img"]["value"]
-                })
+            date = ""
+            if "birthdate" in item:
+                date = item["birthdate"]["value"].split("-")
+                date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
+                date = date.strftime("%d %b %Y")
 
-        return authors
+            author = {
+                "label": item["name"]["value"].replace("/", "%2F") if "name" in item else name,
+                "image": item["img"]["value"] if "img" in item else False,
+                "nationality": item["nationality"]["value"] if "nationality" in item else False,
+                "comment": item["comment"]["value"] if "comment" in item else "Pas de presentation disponible",
+                "website": item["website"]["value"] if "website" in item else "Pas de site disponible",
+                "birthdate": date if "date" != item else "Pas de date disponible",
+                "birthplace": item["birthplace"]["value"] if "birthplace" in item else "Pas de ville disponible",
+            }
+
+        return author
     
 
     ###################

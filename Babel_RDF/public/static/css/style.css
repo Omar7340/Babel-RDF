@@ -8300,11 +8300,11 @@ footer.full-width-ft .ft-copyright {
 }
 
 .ceb-item-style-2 .img-author-container {
-  flex: 1;
+  
 }
 
 .ceb-item-style-2 .ceb-infor {
-  flex: 2;
+  max-height: 60px;
 }
 
 .ceb-item-style-2 img {
