@@ -49,11 +49,21 @@ def manga_details(request, name):
     return HttpResponse(template.render(context, request))
 
 # Page Auteur List
-def auteurs_list(request):
+def auteurs_list(request, page):
+    nb_auteurs = int(spqr.get_all_mangas_count())
+    offset = 30
+
     template = loader.get_template('pages/list_auteurs.html')
     context = {
         'title': SITE_NAME,
-        'auteurs': spqr.get_all_authors()
+        'auteurs': spqr.get_all_authors(page, offset),
+        'nb_auteurs': str(nb_auteurs),
+        'pagination': {
+            'current_page' : str(page),
+            'last_page' : str(ceil(nb_auteurs/offset)),
+            'prev_page' : str(page-1) if page>1 else str(page),
+            'next_page' : str(page+1) if page<ceil(nb_auteurs/offset) else str(page),
+        }
     }
     return HttpResponse(template.render(context, request))
 

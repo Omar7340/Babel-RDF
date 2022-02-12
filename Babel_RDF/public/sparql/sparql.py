@@ -151,8 +151,24 @@ class Sparql:
     ####   AUTHORS  ####
     ####################
     
+    # Get the numbers of authors
+    def get_all_authors_count(self):
+        q = """
+            SELECT DISTINCT count(?author) AS ?nb_authors
+            WHERE {
+                ?manga dbo:type dbr:Manga .
+                ?manga dbo:author ?author .
+                OPTIONAL { ?author dbo:thumbnail ?image. }
+            }
+        """
+
+        return self.get_results(q)[0]["nb_authors"]["value"]
+
     # Gets all mangaka authors
-    def get_all_authors(self):
+    def get_all_authors(self, page, offset):
+
+        limit = str(offset)
+        offset = "0" if int(page) == 1 else str((int(page)-1)*int(limit))
 
         q = """
             SELECT distinct ?name ?img
@@ -161,7 +177,9 @@ class Sparql:
                 ?manga dbo:author ?author .
                 ?author dbo:thumbnail ?img .
                 ?author foaf:name ?name
-            } 
+            }
+            OFFSET """ + offset + """
+            LIMIT """ + limit + """
         """
 
         results = self.get_results(q)
@@ -171,7 +189,7 @@ class Sparql:
             if item["name"]["value"] != '' and item["img"]["value"]:
                 authors.append({
                     "label": item["name"]["value"].replace("/", "%2F"),
-                    "image": item["img"]["value"] if "img" in item.keys() else False,
+                    "image": item["img"]["value"].replace('http://commons.wikimedia.org/wiki/Special:FilePath/', 'https://en.wikipedia.org/wiki/Special:FilePath/') if "img" in item.keys() else False,
                 })
 
         return authors
@@ -215,7 +233,7 @@ class Sparql:
 
         author = {
             "label": item["name"]["value"].replace("/", "%2F") if "name" in item.keys() else name,
-            "image": item["img"]["value"] if "img" in item.keys() else False,
+            "image": item["img"]["value"].replace('http://commons.wikimedia.org/wiki/Special:FilePath/', 'https://en.wikipedia.org/wiki/Special:FilePath/') if "img" in item.keys() else False,
             "nationality": item["nationality"]["value"] if "nationality" in item.keys() else False,
             "comment": item["comment"]["value"] if "comment" in item.keys() else "Pas de presentation disponible",
             "website": item["website"]["value"] if "website" in item.keys() else "Pas de site disponible",

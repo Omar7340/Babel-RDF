@@ -23,26 +23,19 @@
 <div class="page-single">
     <div class="container">
         <div class="row ipad-width2">
-            <div class="col-md-9 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="topbar-filter">
-                    <p class="pad-change"><span>1,608 celebrities</span> trouvés</p>
-                    <label>Trier par:</label>
-                    <select>
-                        <option value="popularity">Popularity Descending</option>
-                        <option value="popularity">Popularity Ascending</option>
-                        <option value="rating">Rating Descending</option>
-                        <option value="rating">Rating Ascending</option>
-                        <option value="date">Release date Descending</option>
-                        <option value="date">Release date Ascending</option>
-                    </select>
-                    <a href="celebritylist.html" class="list"><i class="ion-ios-list-outline "></i></a>
-                    <a href="celebritygrid02.html" class="grid"><i class="ion-grid active"></i></a>
+                    <p class="pad-change"><span>{{ nb_auteurs }} auteurs</span> trouvés</p>
                 </div>
                 <div class="container-list">
                     {% for auteur in auteurs %}
                         <div class="ceb-item-style-2">
                             <div class="img-author-container">
-                                <img src="{{ auteur.image }}" alt="">
+                                {% if auteur.image %}
+                                    <img src="{{ auteur.image }}" alt="">
+                                {% else %}
+                                    <img src="{% static 'images/no-image.png' %}" alt="">
+                                {% endif %}
                             </div>
                             <div class="ceb-infor">
                                 <h2><a href="{% url 'auteur_details' auteur.label %}">{{auteur.label}}</a></h2>
@@ -58,63 +51,19 @@
                     </select>
 
                     <div class="pagination2">
-                        <span>Page 1 / 6:</span>
-                        <a class="active" href="#">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">4</a>
-                        <a href="#">5</a>
-                        <a href="#">6</a>
-                        <a href="#"><i class="ion-arrow-right-b"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-xs-12 col-sm-12">
-                <div class="sidebar">
-                    <div class="searh-form">
-                        <h4 class="sb-title">Search celebrity</h4>
-                        <form class="form-style-1 celebrity-form" action="#">
-                            <div class="row">
-                                <div class="col-md-12 form-it">
-                                    <label>Celebrity name</label>
-                                    <input type="text" placeholder="Enter keywords">
-                                </div>
-                                <div class="col-md-12 form-it">
-                                    <label>Celebrity Letter</label>
-                                    <select>
-                                        <option value="range">A</option>
-                                        <option value="saab">B</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-12 form-it">
-                                    <label>Category</label>
-                                    <select>
-                                        <option value="range">Actress</option>
-                                        <option value="saab">Others</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-12 form-it">
-                                    <label>Year of birth</label>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <select>
-                                                <option value="range">1970</option>
-                                                <option value="number">Other</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select>
-                                                <option value="range">1990</option>
-                                                <option value="number">others</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 ">
-                                    <input class="submit" type="submit" value="submit">
-                                </div>
-                            </div>
-                        </form>
+                        {% if pagination.current_page == pagination.prev_page %}
+                        <a href="{% url 'auteurs_list' pagination.prev_page %}" hidden><i class="ion-arrow-left-b"></i></a>
+                        {% else %}
+                        <a href="{% url 'auteurs_list' pagination.prev_page %}"><i class="ion-arrow-left-b"></i></a>
+                        {% endif %}
+                        
+                        <span>Page {{ pagination.current_page }} / {{ pagination.last_page }}</span>
+
+                        {% if pagination.current_page == pagination.next_page %}
+                        <a href="{% url 'auteurs_list' pagination.next_page %}" hidden><i class="ion-arrow-right-b"></i></a>
+                        {% else %}
+                        <a href="{% url 'auteurs_list' pagination.next_page %}"><i class="ion-arrow-right-b"></i></a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
