@@ -177,7 +177,7 @@ class Sparql:
             if item["name"]["value"] != '' and item["img"]["value"]:
                 authors.append({
                     "label": item["name"]["value"].replace("/", "%2F"),
-                    "image": item["img"]["value"]
+                    "image": item["img"]["value"] if "img" in item.keys() else False,
                 })
 
         return authors
@@ -188,45 +188,46 @@ class Sparql:
         name = name.replace("_", " ").replace("%2F", "/")
 
         q = """
-            SELECT distinct ?name ?img ?nationality ?comment ?website ?birthdate ?birthplace
+            SELECT distinct ?name ?img ?nationality ?comment ?website ?birthdate ?birthplaceLabel
             WHERE {
                 ?manga dbo:type dbr:Manga .
                 ?manga dbo:author ?author .
-                OPTIONAL {
-                    ?author dbo:thumbnail ?img .
-                    ?author foaf:name ?name .
-                    ?author dbp:nationality ?nationality .
-                    ?author rdfs:comment ?comment .
-                    ?author dbp:website ?website .
-                    ?author dbp:birthDate ?birthdate .
+                OPTIONAL { ?author dbo:thumbnail ?img .} .
+                OPTIONAL { ?author foaf:name ?name .} .
+                OPTIONAL { ?author dbp:nationality ?nationality .} .
+                OPTIONAL { ?author rdfs:comment ?comment .} .
+                OPTIONAL { 
+                    FILTER langMatches(lang(?comment), 'en') .
+                } .
+                OPTIONAL { ?author dbp:website ?website .} .
+                OPTIONAL { ?author dbp:birthDate ?birthdate .} .
+                OPTIONAL { 
                     ?author dbp:birthPlace ?birthplace .
-                    FILTER regex(?name, """ + "\"" + name + "\"" + """) .
-                    FILTER langMatches(lang(?comment), 'fr')
-                }
+                    ?birthplace rdfs:label ?birthplaceLabel .
+                    FILTER langMatches(lang(?birthplaceLabel), 'en') .
+                } .
+                FILTER regex(?name, """ + "\"" + name + "\"" + """) .
             }
         """
 
-        results = self.get_results(q)
-        author = {}
+        item = self.get_results(q)
+        item = item[0]
 
-        print(results)
+        date = ""
+        if "birthdate" in item:
+            date = item["birthdate"]["value"].split("-")
+            date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
+            date = date.strftime("%d %b %Y")
 
-        for item in results:
-            date = ""
-            if "birthdate" in item:
-                date = item["birthdate"]["value"].split("-")
-                date = datetime.datetime(int(date[0]), int(date[1]), int(date[2]))
-                date = date.strftime("%d %b %Y")
-
-            author = {
-                "label": item["name"]["value"].replace("/", "%2F") if "name" in item else name,
-                "image": item["img"]["value"] if "img" in item else False,
-                "nationality": item["nationality"]["value"] if "nationality" in item else False,
-                "comment": item["comment"]["value"] if "comment" in item else "Pas de presentation disponible",
-                "website": item["website"]["value"] if "website" in item else "Pas de site disponible",
-                "birthdate": date if "date" != item else "Pas de date disponible",
-                "birthplace": item["birthplace"]["value"] if "birthplace" in item else "Pas de ville disponible",
-            }
+        author = {
+            "label": item["name"]["value"].replace("/", "%2F") if "name" in item.keys() else name,
+            "image": item["img"]["value"] if "img" in item.keys() else False,
+            "nationality": item["nationality"]["value"] if "nationality" in item.keys() else False,
+            "comment": item["comment"]["value"] if "comment" in item.keys() else "Pas de presentation disponible",
+            "website": item["website"]["value"] if "website" in item.keys() else "Pas de site disponible",
+            "birthdate": date if "date" != item.keys() else "Pas de date disponible",
+            "birthplace": item["birthplaceLabel"]["value"] if "birthplaceLabel" in item.keys() else "Pas de ville disponible",
+        }
 
         return author
     
