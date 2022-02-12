@@ -8,76 +8,46 @@
 <div class="slider sliderv2">
     <div class="container">
         <div class="row">
-            <div class="slider-single-item">
+            <div class="slider-single-item">                
+                {% for item in slider %}
                 <div class="movie-item">
                     <div class="row">
                         <div class="col-md-8 col-sm-12 col-xs-12">
                             <div class="title-in">
                                 <div class="cate">
-                                    <span class="blue"><a href="#">Sci-fi</a></span>
-                                    <span class="yell"><a href="#">Action</a></span>
-                                    <span class="orange"><a href="#">advanture</a></span>
+                                    {% for genre in item.genre %}
+                                    <span class="blue"><a href="#">{{ genre }}</a></span>
+                                    {% endfor %}
                                 </div>
-                                <h1><a href="#">guardians of the galaxy <span>2015</span></a></h1>
-                                <div class="social-btn">
-                                    <a href="#" class="parent-btn"><i class="ion-play"></i> Watch Trailer</a>
-                                </div>
+                                <h1><a href="#">{{ item.label }} <span>{{ item.year }}</span></a></h1>
+                                <div class="social-btn"></div>
                                 <div class="mv-details">
-                                    <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
                                     <ul class="mv-infor">
-                                        <li> Run Time: 2h21’ </li>
-                                        <li> Rated: PG-13 </li>
-                                        <li> Release: 1 May 2015</li>
+                                        <li> Date de sortie : {{ item.firstPublicationDate }}</li>
+                                        <li> Dernière sortie : {{ item.lastPublicationDate }}</li>
                                     </ul>
                                 </div>
                                 <div class="btn-transform transform-vertical">
-                                    <div><a href="#" class="item item-1 redbtn">more detail</a></div>
-                                    <div><a href="#" class="item item-2 redbtn hvrbtn">more detail</a></div>
+                                    <div><a href="{% url 'manga_details' item.label %}" class="item item-1 redbtn">Voir plus</a></div>
+                                    <div><a href="{% url 'manga_details' item.label %}" class="item item-2 redbtn hvrbtn">Voir plus</a></div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12">
                             <div class="mv-img-2">
-                                <a href="#"><img src="{% static 'images/uploads/poster1.jpg' %}" alt=""></a>
+                                <a href="{% url 'manga_details' item.label %}">
+                                    {% if item.image == 'undefined' %}
+                                    <img src="{% static 'images/no-image.png' %}" alt="">
+                                    {% else %}
+                                    <img height="401" src="{{ item.image }}" alt="">
+                                    {% endif %}
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="movie-item">
-                    <div class="row">
-                        <div class="col-md-8 col-sm-12 col-xs-12">
-                            <div class="title-in">
-                                <div class="cate">
-                                    <span class="blue"><a href="#">Sci-fi</a></span>
-                                    <span class="yell"><a href="#">Action</a></span>
-                                    <span class="orange"><a href="#">advanture</a></span>
-                                </div>
-                                <h1><a href="#">guardians of the galaxy <span>2015</span></a></h1>
-                                <div class="social-btn">
-                                    <a href="#" class="parent-btn"><i class="ion-play"></i> Watch Trailer</a>
-                                </div>
-                                <div class="mv-details">
-                                    <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                    <ul class="mv-infor">
-                                        <li> Run Time: 2h21’ </li>
-                                        <li> Rated: PG-13 </li>
-                                        <li> Release: 1 May 2015</li>
-                                    </ul>
-                                </div>
-                                <div class="btn-transform transform-vertical">
-                                    <div><a href="#" class="item item-1 redbtn">more detail</a></div>
-                                    <div><a href="#" class="item item-2 redbtn hvrbtn">more detail</a></div>
-                                </div>
+                {% endfor %}
 
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-12 col-xs-12">
-                            <div class="mv-img-2">
-                                <a href="#"><img src="{% static 'images/uploads/poster1.jpg' %}" alt=""></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -90,136 +60,38 @@
 
             <!-- BEGIN Category -->
             <div class="title-hd">
-                <h2>in theater</h2>
+                <h2>Dernières Publications</h2>
             </div>
             <div class="tabs">
                 <ul class="tab-links">
-                    <li class="active"><a href="#tab1-h2">#Popular</a></li>
+                    <li class="active"><a href="#tab1-h2">#Mangas</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="tab1-h2" class="tab active">
                         <div class="row">
                             <div class="slick-multiItem2">
+
+                                {% for item in last_updated %}
                                 <div class="slide-it">
                                     <div class="movie-item">
                                         <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it1.jpg' %}" alt="">
+                                            {% if item.image == 'undefined' %}
+                                            <img src="{% static 'images/no-image.png' %}" alt="">
+                                            {% else %}
+                                            <img height="401" src="{{ item.image }}" alt="">
+                                            {% endif %}
                                         </div>
                                         <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
+                                            <a href="{% url 'manga_details' item.label %}"> Voir plus <i class="ion-android-arrow-dropright"></i> </a>
                                         </div>
                                         <div class="title-in">
-                                            <h6><a href="#">Interstellar</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
+                                            <h6><a href="{% url 'manga_details' item.label %}">{{ item.label }}</a></h6>
+                                            <p>{{ item.date }}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it2.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">The revenant</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it3.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it4.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">The walk</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it5.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it6.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Interstellar</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it7.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it8.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% endfor %}
+
                             </div>
                         </div>
                     </div>
@@ -229,136 +101,38 @@
 
             <!-- BEGIN Category -->
             <div class="title-hd">
-                <h2>on tv</h2>
+                <h2>Mangas avec le plus de volumes</h2>
             </div>
             <div class="tabs">
                 <ul class="tab-links-2">
-                    <li class="active"><a href="#tab21-h2">#Popular</a></li>
+                    <li class="active"><a href="#tab21-h2">#Mangas</a></li>
                 </ul>
                 <div class="tab-content">
                     <div id="tab21-h2" class="tab active">
                         <div class="row">
                             <div class="slick-multiItem2">
+
+                                {% for item in most_volume %}
                                 <div class="slide-it">
                                     <div class="movie-item">
                                         <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it7.jpg' %}" alt="">
+                                            {% if item.image == 'undefined' %}
+                                            <img src="{% static 'images/no-image.png' %}" alt="">
+                                            {% else %}
+                                            <img height="401" src="{{ item.image }}" alt="">
+                                            {% endif %}
                                         </div>
                                         <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
+                                            <a href="{% url 'manga_details' item.label %}"> Voir plus <i class="ion-android-arrow-dropright"></i> </a>
                                         </div>
                                         <div class="title-in">
-                                            <h6><a href="#">Interstellar</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
+                                            <h6><a href="{% url 'manga_details' item.label %}">{{ item.label }}</a></h6>
+                                            <p>{{ item.volumes }}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it8.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">The revenant</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it9.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it4.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">The walk</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it5.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it6.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Interstellar</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it7.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="slide-it">
-                                    <div class="movie-item">
-                                        <div class="mv-img">
-                                            <img src="{% static 'images/uploads/mv-it8.jpg' %}" alt="">
-                                        </div>
-                                        <div class="hvr-inner">
-                                            <a href="moviesingle.html"> Read more <i
-                                                    class="ion-android-arrow-dropright"></i> </a>
-                                        </div>
-                                        <div class="title-in">
-                                            <h6><a href="#">Die hard</a></h6>
-                                            <p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                {% endfor %}
+
                             </div>
                         </div>
                     </div>
