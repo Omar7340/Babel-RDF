@@ -101,9 +101,7 @@ class Sparql:
                 ?x rdf:type dbo:Manga.
                 ?x dbp:name ?mangaLabel.
                 ?x dbo:lastPublicationDate ?lastPublicationDate
-                OPTIONAL {
-                    ?x dbo:thumbnail ?image.
-                }
+                OPTIONAL { ?x dbo:thumbnail ?image. }
                 
             }
             ORDER BY DESC(?lastPublicationDate)
@@ -243,9 +241,7 @@ class Sparql:
             WHERE {
                 ?x rdf:type dbo:Manga.
                 ?x dbp:name ?mangaLabel.
-                OPTIONAL {
-                    ?x dbo:thumbnail ?image.
-                }
+                OPTIONAL { ?x dbo:thumbnail ?image. }
             }
         """
 
@@ -260,9 +256,7 @@ class Sparql:
             WHERE {
                 ?x rdf:type dbo:Manga.
                 ?x dbp:name ?mangaLabel.
-                OPTIONAL {
-                    ?x dbo:thumbnail ?image.
-                }
+                OPTIONAL { ?x dbo:thumbnail ?image. }
             }
             OFFSET """+ offset +""" 
             LIMIT """+ limit +"""
@@ -287,18 +281,16 @@ class Sparql:
             WHERE {
                 ?x rdf:type dbo:Manga.
                 ?x dbp:name ?mangaLabel.
-                OPTIONAL {
-                    ?x dbo:thumbnail ?image.
-                    ?x dbo:abstract ?desc.
-                    ?x dbo:author ?author.
-                    ?x dbp:publisher ?publisher.
-                    ?x dbo:firstPublicationDate ?firstPublicationDate.
-                    ?x dbp:genre ?genre.
-                    ?x dbp:demographic ?demographic.
-                    ?x dbp:volumes ?volumes.
-                    ?x foaf:depiction ?banner.
-                }
-                FILTER (?mangaLabel = \""""+ name +"""\"@en)
+                OPTIONAL { ?x dbo:thumbnail ?image. }
+                OPTIONAL { ?x dbo:abstract ?desc. }
+                OPTIONAL { ?x dbo:author ?author. }
+                OPTIONAL { ?x dbp:publisher ?publisher. }
+                OPTIONAL { ?x dbo:firstPublicationDate ?firstPublicationDate. }
+                OPTIONAL { ?x dbp:genre ?genre. }
+                OPTIONAL { ?x dbp:demographic ?demographic. }
+                OPTIONAL { ?x dbp:volumes ?volumes. }
+                OPTIONAL { ?x foaf:depiction ?banner. }
+                FILTER regex(?mangaLabel, """ + "\"" + name + "\"" + """) .
             }
         """
 
