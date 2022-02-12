@@ -34,7 +34,9 @@
             <div class="col-md-8 col-sm-12 col-xs-12">
                 <div class="movie-single-ct">
                     <h1 class="bd-hd">{{ author.label }}</h1>
-                    <p class="ceb-single">{{ author.nationality }}</p>
+                    {% if author.nationality %}
+                        <p class="ceb-single">{{ author.nationality }}</p>
+                    {% endif %}
                     <div class="movie-tabs">
                         <div class="tabs">
                             <ul class="tab-links tabs-mv">

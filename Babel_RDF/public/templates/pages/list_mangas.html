@@ -30,10 +30,10 @@
 
                     {% for item in mangas %}
                     <div class="movie-item-style-2 movie-item-style-1">
-                        {% if item.image == 'undefined' %}
-                        <img src="{% static 'images/no-image.png' %}" alt="">
+                        {% if item.image %}
+                            <img height="401" src="{{ item.image }}" alt="">
                         {% else %}
-                        <img height="401" src="{{ item.image }}" alt="">
+                            <img src="{% static 'images/no-image.png' %}" alt="">
                         {% endif %}
                         <div class="hvr-inner">
                             <a href="{% url 'manga_details' item.label %}"> Voir plus <i class="ion-android-arrow-dropright"></i> </a>
